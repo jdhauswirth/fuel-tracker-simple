@@ -2,887 +2,243 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <meta name="apple-mobile-web-app-capable" content="yes">
-    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
-    <meta name="apple-mobile-web-app-title" content="Fuel Tracker">
-    <meta name="mobile-web-app-capable" content="yes">
-    <link rel="apple-touch-icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><rect width='100' height='100' fill='%232E7D32'/><text x='50' y='65' font-size='50' text-anchor='middle' fill='white'>⛽</text></svg>">
-    <link rel="manifest" href="data:application/json;charset=utf-8,%7B%22name%22%3A%22Fuel%20Tracker%22%2C%22short_name%22%3A%22Fuel%22%2C%22display%22%3A%22standalone%22%2C%22background_color%22%3A%22%232E7D32%22%2C%22theme_color%22%3A%22%232E7D32%22%7D">
-    <title>Fuel Tracker</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Fuel Tracker - Debug Version</title>
     <style>
-        * {
-            box-sizing: border-box;
-            margin: 0;
-            padding: 0;
-        }
-        
         body {
-            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Arial, sans-serif;
-            background: linear-gradient(135deg, #2E7D32 0%, #1B5E20 100%);
-            min-height: 100vh;
+            font-family: Arial, sans-serif;
+            max-width: 600px;
+            margin: 50px auto;
             padding: 20px;
+            background: #f0f0f0;
         }
-        
         .container {
-            max-width: 500px;
-            margin: 0 auto;
             background: white;
-            border-radius: 16px;
-            box-shadow: 0 10px 40px rgba(0,0,0,0.2);
-            overflow: hidden;
-        }
-        
-        .header {
-            padding: 20px 30px 10px;
-        }
-        
-        h1 {
-            color: #333;
-            margin-bottom: 5px;
-            font-size: 24px;
-            font-weight: bold;
-        }
-        
-        .vehicle-info {
-            color: #333;
-            margin-bottom: 5px;
-            font-size: 13px;
-            font-weight: normal;
-        }
-        
-        .subtitle {
-            color: #666;
-            margin-bottom: 15px;
-            font-size: 10pt;
-            font-weight: normal;
-            margin-top: 0;
-        }
-        
-        .tabs {
-            display: flex;
-            background: #f5f5f5;
-            border-bottom: 2px solid #e0e0e0;
-        }
-        
-        .tab {
-            flex: 1;
-            padding: 15px;
-            text-align: center;
-            background: #f5f5f5;
-            border: none;
-            cursor: pointer;
-            font-size: 14px;
-            font-weight: 600;
-            color: #666;
-            transition: all 0.3s;
-        }
-        
-        .tab.active {
-            background: white;
-            color: #2E7D32;
-            border-bottom: 3px solid #2E7D32;
-        }
-        
-        .tab:hover {
-            background: #e8e8e8;
-        }
-        
-        .tab.active:hover {
-            background: white;
-        }
-        
-        .tab-content {
-            display: none;
             padding: 30px;
+            border-radius: 10px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
         }
-        
-        .tab-content.active {
-            display: block;
+        input {
+            width: 100%;
+            padding: 10px;
+            margin: 10px 0;
+            border: 1px solid #ddd;
+            border-radius: 5px;
+            box-sizing: border-box;
         }
-        
-        .status {
+        button {
+            width: 100%;
             padding: 12px;
-            margin: 0 30px 20px;
-            border-radius: 8px;
-            font-size: 14px;
+            background: #2E7D32;
+            color: white;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            font-size: 16px;
+        }
+        button:hover {
+            background: #1B5E20;
+        }
+        .status {
+            padding: 10px;
+            margin: 10px 0;
+            border-radius: 5px;
             display: none;
         }
-        
-        .status.info {
-            background: #e3f2fd;
-            color: #1976d2;
-            display: block;
-        }
-        
-        .status.success {
-            background: #e8f5e9;
-            color: #388e3c;
-            display: block;
-        }
-        
         .status.error {
             background: #ffebee;
             color: #c62828;
             display: block;
         }
-        
-        .form-group {
-            margin-bottom: 20px;
-        }
-        
-        label {
-            display: block;
-            margin-bottom: 6px;
-            color: #333;
-            font-weight: 600;
-            font-size: 14px;
-        }
-        
-        input, select {
-            width: 100%;
-            padding: 12px;
-            border: 2px solid #e0e0e0;
-            border-radius: 8px;
-            font-size: 16px;
-            transition: border-color 0.3s;
-        }
-        
-        input:focus, select:focus {
-            outline: none;
-            border-color: #2E7D32;
-        }
-        
-        .calculated {
-            background: #f5f5f5;
-            color: #666;
-        }
-        
-        button {
-            width: 100%;
-            padding: 14px;
-            background: linear-gradient(135deg, #2E7D32 0%, #1B5E20 100%);
-            color: white;
-            border: none;
-            border-radius: 8px;
-            font-size: 16px;
-            font-weight: 600;
-            cursor: pointer;
-            transition: transform 0.2s, box-shadow 0.2s;
-        }
-        
-        button:hover {
-            transform: translateY(-2px);
-            box-shadow: 0 4px 12px rgba(46, 125, 50, 0.4);
-        }
-        
-        button:disabled {
-            opacity: 0.6;
-            cursor: not-allowed;
-            transform: none;
-        }
-        
-        .config-section {
-            background: #f9f9f9;
-            padding: 15px;
-            border-radius: 8px;
-            margin-bottom: 20px;
-            font-size: 14px;
-        }
-        
-        .config-section h3 {
-            margin-bottom: 10px;
-            font-size: 16px;
-        }
-        
-        .info-text {
-            font-size: 12px;
-            color: #999;
-            margin-top: 4px;
-        }
-        
-        .input-with-buttons {
-            display: flex;
-            gap: 5px;
-            align-items: stretch;
-        }
-        
-        .input-with-buttons input {
-            flex: 1;
-        }
-        
-        .adjust-btn {
-            width: 45px;
-            padding: 12px;
-            background: #2E7D32;
-            color: white;
-            border: none;
-            border-radius: 8px;
-            font-size: 18px;
-            font-weight: bold;
-            cursor: pointer;
-            transition: background 0.2s;
-        }
-        
-        .adjust-btn:hover {
-            background: #388E3C;
-        }
-        
-        .adjust-btn:active {
-            background: #1B5E20;
-        }
-        
-        .history-list {
-            max-height: 500px;
-            overflow-y: auto;
-        }
-        
-        .history-item {
-            background: #f9f9f9;
-            padding: 15px;
-            margin-bottom: 10px;
-            border-radius: 8px;
-            border-left: 4px solid #2E7D32;
-        }
-        
-        .history-item-date {
-            font-weight: bold;
-            color: #2E7D32;
-            margin-bottom: 5px;
-        }
-        
-        .history-item-detail {
-            font-size: 13px;
-            color: #555;
-            margin: 3px 0;
-        }
-        
-        .secondary-btn {
-            background: #666;
-            margin-top: 10px;
-        }
-        
-        #setupSection {
-            padding: 0 30px 30px;
-        }
-        
-        #appContent {
-            display: none;
-        }
-        
-        #lastFillInfo {
+        .status.success {
             background: #e8f5e9;
-            padding: 12px;
-            border-radius: 8px;
-            margin-bottom: 20px;
-            display: none;
+            color: #2E7D32;
+            display: block;
+        }
+        .debug {
+            background: #f5f5f5;
+            padding: 10px;
+            margin: 10px 0;
+            border: 1px solid #ddd;
+            border-radius: 5px;
+            font-family: monospace;
+            font-size: 12px;
         }
     </style>
 </head>
 <body>
     <div class="container">
-        <div class="header">
-            <h1>⛽ Mileage & Fuel Tracker:</h1>
-            <p class="vehicle-info">Joel H. - 2018 Subaru Outback 2.5L Limited</p>
-            <p class="vehicle-info">VIN: ending -0616</p>
-            <p class="subtitle">(Logs fuel stops to Google Sheet)</p>
-        </div>
+        <h1>Fuel Tracker Setup - Debug Mode</h1>
         
         <div id="status" class="status"></div>
         
-        <!-- Setup Section -->
-        <div id="setupSection">
-            <div class="config-section">
-                <h3>One-Time Setup</h3>
-                <p style="margin-bottom: 15px;">Enter your Google Apps Script Web App URL:</p>
-                
-                <label>Web App URL:</label>
-                <input type="text" id="webAppUrl" placeholder="https://script.google.com/macros/s/...../exec">
-                <p class="info-text">From your deployed Google Apps Script</p>
-                <br>
-                
-                <label>Sheet Name (optional):</label>
-                <input type="text" id="sheetName" placeholder="Sheet1" value="Sheet1">
-                <p class="info-text">The name of your sheet tab (default: Sheet1)</p>
-            </div>
-            <button onclick="saveSetup()">Save & Continue</button>
+        <div id="debugInfo" class="debug">
+            Debug Info will appear here...
         </div>
         
-        <!-- Main App Content -->
-        <div id="appContent">
-            <div class="tabs">
-                <button class="tab active" onclick="showTab('log')">📝 Log Fuel</button>
-                <button class="tab" onclick="showTab('history')">📊 History</button>
-                <button class="tab" onclick="showTab('settings')">⚙️ Settings</button>
-            </div>
-            
-            <!-- Log Tab -->
-            <div id="logTab" class="tab-content active">
-                <div id="lastFillInfo">
-                    <strong>Last Fill-up:</strong>
-                    <div style="margin-top: 5px; font-size: 14px;" id="lastFillDetails"></div>
-                </div>
-                
-                <form id="fuelForm">
-                    <div class="form-group">
-                        <label for="date">Date</label>
-                        <input type="date" id="date" required>
-                    </div>
-                    
-                    <div class="form-group">
-                        <label for="odometer">Odometer (current)</label>
-                        <div class="input-with-buttons">
-                            <button type="button" class="adjust-btn" onclick="adjustOdometer(-1)">-</button>
-                            <input type="text" id="odometer" placeholder="Current mileage" required>
-                            <button type="button" class="adjust-btn" onclick="adjustOdometer(1)">+</button>
-                        </div>
-                        <input type="hidden" id="odometerValue">
-                    </div>
-                    
-                    <div class="form-group">
-                        <label for="milesFill">Miles/Fill</label>
-                        <div class="input-with-buttons">
-                            <button type="button" class="adjust-btn" onclick="adjustMilesFill(-0.1)">-</button>
-                            <input type="number" id="milesFill" step="0.1" placeholder="Miles driven">
-                            <button type="button" class="adjust-btn" onclick="adjustMilesFill(0.1)">+</button>
-                        </div>
-                        <p class="info-text">Auto-calculated, but you can adjust</p>
-                    </div>
-                    
-                    <div class="form-group">
-                        <label for="fuelType">Fuel Type</label>
-                        <select id="fuelType" required>
-                            <option value="R87" selected>R87</option>
-                            <option value="P91">P91</option>
-                            <option value="Other">Other</option>
-                        </select>
-                    </div>
-                    
-                    <div class="form-group">
-                        <label for="gallons">Gallons</label>
-                        <div class="input-with-buttons">
-                            <button type="button" class="adjust-btn" onclick="adjustGallons(-0.1)">-</button>
-                            <input type="number" id="gallons" step="0.001" value="13.500" placeholder="0.000" required>
-                            <button type="button" class="adjust-btn" onclick="adjustGallons(0.1)">+</button>
-                        </div>
-                    </div>
-                    
-                    <div class="form-group">
-                        <label for="mpg">MPG (calculated)</label>
-                        <input type="number" id="mpg" step="0.01" class="calculated" readonly>
-                    </div>
-                    
-                    <div class="form-group">
-                        <label for="pricePerGal">$/Gal</label>
-                        <div class="input-with-buttons">
-                            <button type="button" class="adjust-btn" onclick="adjustPrice(-0.10)">-</button>
-                            <input type="number" id="pricePerGal" step="0.001" placeholder="0.000" required>
-                            <button type="button" class="adjust-btn" onclick="adjustPrice(0.10)">+</button>
-                        </div>
-                    </div>
-                    
-                    <div class="form-group">
-                        <label for="location">Location</label>
-                        <input type="text" id="location" list="locationList" placeholder="Select or type location" value="COSTCO SOS" required>
-                        <datalist id="locationList">
-                            <option value="COSTCO SOS">
-                            <option value="COSTCO GSE">
-                        </datalist>
-                    </div>
-                    
-                    <button type="submit">Log Fuel Stop</button>
-                </form>
-            </div>
-            
-            <!-- History Tab -->
-            <div id="historyTab" class="tab-content">
-                <button onclick="loadHistory()" style="margin-bottom: 20px;">🔄 Refresh History</button>
-                <div id="historyList" class="history-list">
-                    <p style="text-align: center; color: #999;">Click "Refresh History" to load your fuel stops</p>
-                </div>
-            </div>
-            
-            <!-- Settings Tab -->
-            <div id="settingsTab" class="tab-content">
-                <h3 style="margin-bottom: 20px;">App Settings</h3>
-                
-                <div class="config-section">
-                    <label>Web App URL:</label>
-                    <input type="text" id="settingsWebAppUrl" placeholder="https://script.google.com/macros/s/...../exec">
-                    <p class="info-text">Your Google Apps Script URL</p>
-                    <br>
-                    
-                    <label>Sheet Name:</label>
-                    <input type="text" id="settingsSheetName" placeholder="Sheet1">
-                    <p class="info-text">The name of your sheet tab</p>
-                    <br>
-                    
-                    <button onclick="updateSettings()">Update Settings</button>
-                </div>
-                
-                <button onclick="clearSettings()" class="secondary-btn">Clear All Settings</button>
-            </div>
+        <label for="webAppUrl">Web App URL:</label>
+        <input type="text" id="webAppUrl" placeholder="https://script.google.com/macros/s/.../exec">
+        
+        <label for="sheetName">Sheet Name:</label>
+        <input type="text" id="sheetName" value="Sheet1" placeholder="Sheet1">
+        
+        <button onclick="testConnection()">Test Connection</button>
+        <br><br>
+        <button onclick="saveAndContinue()">Save & Continue</button>
+        
+        <br><br>
+        <div id="results" style="display:none;">
+            <h3>Connection Test Results:</h3>
+            <div id="testResults" class="debug"></div>
         </div>
     </div>
 
     <script>
-        // Global variables
-        let lastOdometer = null;
-        let WEB_APP_URL = '';
-        let SHEET_NAME = 'Sheet1';
-        
-        // Initialize on load
-        window.addEventListener('load', () => {
-            checkSetup();
-            setTodayDate();
-        });
-        
-        // Check if app is set up
-        function checkSetup() {
-            WEB_APP_URL = localStorage.getItem('fuelTracker_webAppUrl');
-            SHEET_NAME = localStorage.getItem('fuelTracker_sheetName') || 'Sheet1';
-            
-            if (WEB_APP_URL) {
-                document.getElementById('setupSection').style.display = 'none';
-                document.getElementById('appContent').style.display = 'block';
-                loadLastOdometer();
-                showStatus('App ready!', 'success');
-            } else {
-                document.getElementById('setupSection').style.display = 'block';
-                document.getElementById('appContent').style.display = 'none';
-            }
+        // Debug info
+        function log(message) {
+            const debugDiv = document.getElementById('debugInfo');
+            debugDiv.innerHTML += message + '<br>';
+            console.log(message);
         }
         
-        // Save initial setup
-        function saveSetup() {
+        // Show status
+        function showStatus(message, type) {
+            const statusDiv = document.getElementById('status');
+            statusDiv.textContent = message;
+            statusDiv.className = 'status ' + type;
+            statusDiv.style.display = 'block';
+        }
+        
+        // Test connection to Web App
+        async function testConnection() {
             const url = document.getElementById('webAppUrl').value.trim();
             const sheetName = document.getElementById('sheetName').value.trim() || 'Sheet1';
             
+            log('Testing URL: ' + url);
+            log('Sheet Name: ' + sheetName);
+            
             if (!url) {
-                showStatus('Please enter your Web App URL', 'error');
+                showStatus('Please enter a Web App URL', 'error');
                 return;
             }
             
-            localStorage.setItem('fuelTracker_webAppUrl', url);
-            localStorage.setItem('fuelTracker_sheetName', sheetName);
-            
-            WEB_APP_URL = url;
-            SHEET_NAME = sheetName;
-            
-            checkSetup();
-        }
-        
-        // Update settings
-        function updateSettings() {
-            const url = document.getElementById('settingsWebAppUrl').value.trim();
-            const sheetName = document.getElementById('settingsSheetName').value.trim();
-            
-            if (url) localStorage.setItem('fuelTracker_webAppUrl', url);
-            if (sheetName) localStorage.setItem('fuelTracker_sheetName', sheetName);
-            
-            showStatus('Settings updated!', 'success');
-            location.reload();
-        }
-        
-        // Clear all settings
-        function clearSettings() {
-            if (confirm('This will clear all settings. Continue?')) {
-                localStorage.clear();
-                location.reload();
+            if (!url.includes('/s/') || !url.endsWith('/exec')) {
+                showStatus('URL format looks wrong. Should contain /s/ and end with /exec', 'error');
+                return;
             }
-        }
-        
-        // Show status message
-        function showStatus(message, type = 'info') {
-            const status = document.getElementById('status');
-            status.textContent = message;
-            status.className = `status ${type}`;
-            status.style.display = 'block';
             
-            if (type !== 'error') {
-                setTimeout(() => {
-                    status.style.display = 'none';
-                }, 3000);
-            }
-        }
-        
-        // Tab switching
-        function showTab(tabName) {
-            document.querySelectorAll('.tab-content').forEach(tab => tab.classList.remove('active'));
-            document.querySelectorAll('.tab').forEach(btn => btn.classList.remove('active'));
+            showStatus('Testing connection...', 'success');
             
-            document.getElementById(tabName + 'Tab').classList.add('active');
-            event.target.classList.add('active');
-            
-            // Load settings values when showing settings tab
-            if (tabName === 'settings') {
-                document.getElementById('settingsWebAppUrl').value = localStorage.getItem('fuelTracker_webAppUrl') || '';
-                document.getElementById('settingsSheetName').value = localStorage.getItem('fuelTracker_sheetName') || 'Sheet1';
-            }
-        }
-        
-        // Set today's date
-        function setTodayDate() {
-            const today = new Date();
-            const year = today.getFullYear();
-            const month = String(today.getMonth() + 1).padStart(2, '0');
-            const day = String(today.getDate()).padStart(2, '0');
-            document.getElementById('date').value = `${year}-${month}-${day}`;
-        }
-        
-        // Load last odometer reading
-        async function loadLastOdometer() {
             try {
-                const response = await fetch(WEB_APP_URL + '?sheetName=' + SHEET_NAME + '&range=B:J');
-                const data = await response.json();
+                const testUrl = url + '?sheetName=' + encodeURIComponent(sheetName) + '&range=B1:B2';
+                log('Fetching: ' + testUrl);
                 
-                if (!data.success) {
-                    console.error('Error loading data:', data.message);
+                const response = await fetch(testUrl);
+                const text = await response.text();
+                
+                log('Response received: ' + text.substring(0, 200) + '...');
+                
+                let data;
+                try {
+                    data = JSON.parse(text);
+                } catch (e) {
+                    log('Error parsing JSON: ' + e.message);
+                    showStatus('Invalid response from server. Check your Web App deployment.', 'error');
                     return;
                 }
                 
-                const values = data.values;
-                // Filter out empty rows more robustly
-                const dataRows = values ? values.filter(row => 
-                    row && 
-                    row.length >= 2 && 
-                    row[0] && String(row[0]).trim() !== '' &&
-                    row[1] && String(row[1]).trim() !== '' &&
-                    !isNaN(parseFloat(String(row[1]).replace(/,/g, '')))  // Ensure odometer is a number
-                ) : [];
+                document.getElementById('results').style.display = 'block';
                 
-                if (dataRows && dataRows.length > 1) {
-                    const lastRow = dataRows[dataRows.length - 1];
-                    
-                    // Get last odometer
-                    lastOdometer = parseFloat(String(lastRow[1]).replace(/,/g, ''));
-                    
-                    // Show last fill info
-                    if (lastRow[0] && lastOdometer) {
-                        // Parse date - handle both ISO format and YYYY-MM-DD format
-                        let lastDateFormatted = lastRow[0];
-                        let lastDateObj;
-                        
-                        if (lastRow[0].includes('T')) {
-                            // ISO format from Sheets
-                            lastDateObj = new Date(lastRow[0]);
-                            lastDateFormatted = lastDateObj.toISOString().split('T')[0];
-                        } else {
-                            // Simple date format
-                            const dateParts = lastRow[0].split('-');
-                            lastDateObj = new Date(dateParts[0], dateParts[1] - 1, dateParts[2]);
-                            lastDateFormatted = lastRow[0];
-                        }
-                        
-                        let daysAgo = '';
-                        const today = new Date();
-                        today.setHours(0, 0, 0, 0);
-                        lastDateObj.setHours(0, 0, 0, 0);
-                        const diffTime = today.getTime() - lastDateObj.getTime();
-                        const diffDays = Math.round(diffTime / (1000 * 60 * 60 * 24));
-                        daysAgo = ` (${diffDays} days ago)`;
-                        
-                        
-                        document.getElementById('lastFillInfo').style.display = 'block';
-                        document.getElementById('lastFillDetails').innerHTML = 
-                            `📅 Date: ${lastDateFormatted}${daysAgo}<br>🚗 Odometer (prior): ${lastOdometer.toLocaleString()} miles`;
-                    }
-                    
-                    // Calculate averages for pre-filling
-                    const milesFillValues = [];
-                    const pricePerGalValues = [];
-                    const startIndex = Math.max(1, dataRows.length - 4);
-                    
-                    for (let i = startIndex; i < dataRows.length; i++) {
-                        const milesFillValue = dataRows[i][2];
-                        if (milesFillValue && !isNaN(milesFillValue)) {
-                            milesFillValues.push(parseFloat(String(milesFillValue).replace(/,/g, '')));
-                        }
-                        
-                        let priceValue = dataRows[i][6];
-                        if (priceValue) {
-                            const cleanedPrice = String(priceValue).replace(/[\$,\s]/g, '').trim();
-                            if (cleanedPrice && !isNaN(cleanedPrice)) {
-                                pricePerGalValues.push(parseFloat(cleanedPrice));
-                            }
-                        }
-                    }
-                    
-                    // Pre-fill estimated odometer
-                    if (milesFillValues.length > 0) {
-                        const averageMilesFill = milesFillValues.reduce((a, b) => a + b, 0) / milesFillValues.length;
-                        const estimatedOdometer = lastOdometer + Math.round(averageMilesFill);
-                        document.getElementById('odometer').value = estimatedOdometer.toLocaleString('en-US');
-                        document.getElementById('odometerValue').value = estimatedOdometer;
-                        calculateValues();
-                    }
-                    
-                    // Pre-fill average price
-                    if (pricePerGalValues.length > 0) {
-                        const averagePrice = pricePerGalValues.reduce((a, b) => a + b, 0) / pricePerGalValues.length;
-                        document.getElementById('pricePerGal').value = averagePrice.toFixed(3);
-                    }
-                    
-                    // Build location list
-                    const uniqueLocations = new Set();
-                    for (let i = 2; i < dataRows.length; i++) {
-                        const location = dataRows[i][7];
-                        if (location && location.trim()) {
-                            uniqueLocations.add(location.trim());
-                        }
-                    }
-                    
-                    const datalist = document.getElementById('locationList');
-                    datalist.innerHTML = `
-                        <option value="COSTCO SOS">
-                        <option value="COSTCO GSE">
-                    `;
-                    uniqueLocations.forEach(location => {
-                        if (location !== "COSTCO SOS" && location !== "COSTCO GSE") {
-                            const option = document.createElement('option');
-                            option.value = location;
-                            datalist.appendChild(option);
-                        }
-                    });
-                }
-            } catch (err) {
-                console.error('Error loading last odometer:', err);
-                showStatus('Could not load previous data', 'info');
-            }
-        }
-        
-        // Load history
-        async function loadHistory() {
-            showStatus('Loading history...', 'info');
-            try {
-                const response = await fetch(WEB_APP_URL + '?sheetName=' + SHEET_NAME + '&range=B:J');
-                const data = await response.json();
-                
-                if (!data.success) {
-                    showStatus('Error loading history: ' + data.message, 'error');
-                    return;
-                }
-                
-                const values = data.values;
-                // Filter out empty rows more robustly
-                const dataRows = values ? values.filter(row => 
-                    row && 
-                    row.length >= 2 && 
-                    row[0] && String(row[0]).trim() !== '' &&
-                    row[1] && String(row[1]).trim() !== '' &&
-                    !isNaN(parseFloat(String(row[1]).replace(/,/g, '')))  // Ensure odometer is a number
-                ) : [];
-                
-                const historyList = document.getElementById('historyList');
-                historyList.innerHTML = '';
-                
-                if (dataRows && dataRows.length > 1) {
-                    for (let i = dataRows.length - 1; i >= 1; i--) {
-                        const row = dataRows[i];
-                        
-                        // Format date - handle both ISO and simple format
-                        let dateDisplay = row[0];
-                        if (row[0] && row[0].includes('T')) {
-                            // ISO format from Sheets
-                            const dateObj = new Date(row[0]);
-                            dateDisplay = dateObj.toISOString().split('T')[0];
-                        }
-                        
-                        const gallons = parseFloat(row[4]) || 0;
-                        const pricePerGal = parseFloat(String(row[6]).replace(/[\$,\s]/g, '')) || 0;
-                        const totalCost = (gallons * pricePerGal).toFixed(2);
-                        
-                        const item = document.createElement('div');
-                        item.className = 'history-item';
-                        const costLine = gallons.toFixed(3) + ' gallons @ 
-                        historyList.appendChild(item);
-                    }
-                    showStatus('History loaded!', 'success');
+                if (data.success) {
+                    showStatus('✓ Connection successful! Found ' + (data.values ? data.values.length : 0) + ' rows', 'success');
+                    document.getElementById('testResults').innerHTML = 
+                        'Success: true<br>' +
+                        'Rows found: ' + (data.values ? data.values.length : 0) + '<br>' +
+                        'First few values: ' + JSON.stringify(data.values ? data.values.slice(0, 3) : []);
                 } else {
-                    historyList.innerHTML = '<p style="text-align: center; color: #999;">No fuel stops found</p>';
+                    showStatus('Connection failed: ' + data.message, 'error');
+                    document.getElementById('testResults').innerHTML = 'Error: ' + data.message;
                 }
-            } catch (err) {
-                console.error('Error loading history:', err);
-                showStatus('Error loading history', 'error');
+                
+            } catch (error) {
+                log('Fetch error: ' + error.message);
+                showStatus('Connection error: ' + error.message, 'error');
+                document.getElementById('testResults').innerHTML = 'Network error: ' + error.message;
             }
         }
         
-        // Form submission
-        document.getElementById('fuelForm').addEventListener('submit', async (e) => {
-            e.preventDefault();
-            
-            const currentOdometer = parseFloat(document.getElementById('odometerValue').value);
-            
-            if (lastOdometer && currentOdometer <= lastOdometer) {
-                showStatus('Cannot submit: Current odometer must be greater than prior odometer', 'error');
-                return;
-            }
-            
-            const now = new Date();
-            const timestamp = now.getFullYear() + '-' + 
-                            String(now.getMonth() + 1).padStart(2, '0') + '-' + 
-                            String(now.getDate()).padStart(2, '0') + ' ' + 
-                            String(now.getHours()).padStart(2, '0') + ':' + 
-                            String(now.getMinutes()).padStart(2, '0') + ':' + 
-                            String(now.getSeconds()).padStart(2, '0');
-            
-            const formData = {
-                action: 'append',
-                sheetName: SHEET_NAME,
-                date: document.getElementById('date').value,
-                odometer: currentOdometer,
-                milesFill: parseFloat(document.getElementById('milesFill').value) || '',
-                fuelType: document.getElementById('fuelType').value,
-                gallons: parseFloat(document.getElementById('gallons').value),
-                mpg: parseFloat(document.getElementById('mpg').value) || '',
-                pricePerGal: parseFloat(document.getElementById('pricePerGal').value),
-                location: document.getElementById('location').value,
-                timestamp: timestamp
-            };
-            
-            showStatus('Saving to Google Sheets...', 'info');
-            
+        // Save and continue
+        function saveAndContinue() {
             try {
-                const response = await fetch(WEB_APP_URL, {
-                    method: 'POST',
-                    headers: {
-                        'Content-Type': 'text/plain',
-                    },
-                    body: JSON.stringify(formData)
-                });
+                log('saveAndContinue() called');
                 
-                const result = await response.json();
+                const url = document.getElementById('webAppUrl').value.trim();
+                const sheetName = document.getElementById('sheetName').value.trim() || 'Sheet1';
                 
-                if (result.success) {
-                    showStatus('Fuel stop logged successfully!', 'success');
+                log('URL: ' + url);
+                log('Sheet: ' + sheetName);
+                
+                if (!url) {
+                    showStatus('Please enter a Web App URL', 'error');
+                    return;
+                }
+                
+                // Try to save to localStorage
+                try {
+                    localStorage.setItem('fuelTracker_webAppUrl', url);
+                    localStorage.setItem('fuelTracker_sheetName', sheetName);
+                    log('✓ Saved to localStorage successfully');
+                } catch (e) {
+                    log('✗ localStorage error: ' + e.message);
+                    showStatus('Could not save settings: ' + e.message, 'error');
+                    return;
+                }
+                
+                // Test that we can read it back
+                const savedUrl = localStorage.getItem('fuelTracker_webAppUrl');
+                const savedSheet = localStorage.getItem('fuelTracker_sheetName');
+                
+                log('Read back URL: ' + savedUrl);
+                log('Read back Sheet: ' + savedSheet);
+                
+                if (savedUrl === url) {
+                    showStatus('Settings saved! Redirecting to main app...', 'success');
+                    log('✓ Settings verified');
                     
-                    lastOdometer = formData.odometer;
-                    
-                    // Reset form
-                    document.getElementById('fuelForm').reset();
-                    setTodayDate();
-                    document.getElementById('fuelType').value = 'R87';
-                    document.getElementById('gallons').value = '13.500';
-                    document.getElementById('location').value = 'COSTCO SOS';
-                    document.getElementById('odometer').value = '';
-                    document.getElementById('odometerValue').value = '';
-                    
+                    // Redirect to main app after 2 seconds
                     setTimeout(() => {
-                        showStatus('Ready for next entry', 'info');
+                        // Go back to the main app page
+                        window.location.href = window.location.href.replace(/[^/]*$/, 'index.html');
                     }, 2000);
                 } else {
-                    showStatus('Error: ' + result.message, 'error');
+                    showStatus('Settings verification failed', 'error');
+                    log('✗ Saved URL does not match');
                 }
+                
             } catch (error) {
-                showStatus('Error saving: ' + error.message, 'error');
-                console.error('Save error:', error);
-            }
-        });
-        
-        // Adjustment button functions
-        function adjustOdometer(amount) {
-            const currentValue = parseFloat(document.getElementById('odometerValue').value) || 0;
-            const newValue = currentValue + amount;
-            if (newValue >= 0) {
-                document.getElementById('odometer').value = newValue.toLocaleString('en-US');
-                document.getElementById('odometerValue').value = newValue;
-                calculateValues();
+                log('Unexpected error: ' + error.message);
+                showStatus('Unexpected error: ' + error.message, 'error');
             }
         }
         
-        function adjustPrice(amount) {
-            const currentValue = parseFloat(document.getElementById('pricePerGal').value) || 0;
-            const newValue = currentValue + amount;
-            if (newValue >= 0) {
-                document.getElementById('pricePerGal').value = newValue.toFixed(3);
-            }
-        }
-        
-        function adjustGallons(amount) {
-            const currentValue = parseFloat(document.getElementById('gallons').value) || 0;
-            const newValue = currentValue + amount;
-            if (newValue >= 0) {
-                document.getElementById('gallons').value = newValue.toFixed(3);
-                calculateMPG();
-            }
-        }
-        
-        function adjustMilesFill(amount) {
-            const currentValue = parseFloat(document.getElementById('milesFill').value) || 0;
-            const newValue = currentValue + amount;
-            if (newValue >= 0) {
-                document.getElementById('milesFill').value = newValue.toFixed(1);
-                const milesFill = newValue;
-                const expectedGallons = milesFill / 26.1;
-                document.getElementById('gallons').value = expectedGallons.toFixed(3);
-                calculateMPG();
-            }
-        }
-        
-        // Input event listeners
-        document.getElementById('odometer').addEventListener('input', function(e) {
-            let value = e.target.value.replace(/,/g, '');
-            if (value && !isNaN(value)) {
-                const numValue = parseFloat(value);
-                document.getElementById('odometerValue').value = numValue;
-                e.target.value = numValue.toLocaleString('en-US');
-            } else {
-                document.getElementById('odometerValue').value = '';
-            }
-            calculateValues();
-        });
-        
-        document.getElementById('location').addEventListener('input', function(e) {
-            e.target.value = e.target.value.toUpperCase();
-        });
-        
-        document.getElementById('milesFill').addEventListener('input', function(e) {
-            const milesFill = parseFloat(e.target.value);
-            if (milesFill > 0) {
-                const expectedGallons = milesFill / 26.1;
-                document.getElementById('gallons').value = expectedGallons.toFixed(3);
-                calculateMPG();
-            }
-        });
-        
-        document.getElementById('gallons').addEventListener('input', calculateMPG);
-        
-        // Calculation functions
-        function calculateValues() {
-            const odometerStr = document.getElementById('odometerValue').value;
-            const odometer = parseFloat(odometerStr);
+        // Initial check
+        window.addEventListener('load', () => {
+            log('Page loaded');
+            log('Browser: ' + navigator.userAgent);
+            log('localStorage available: ' + (typeof(Storage) !== "undefined"));
             
-            if (lastOdometer && odometer && odometer <= lastOdometer) {
-                showStatus('Error: Current odometer must be greater than prior odometer (' + lastOdometer.toLocaleString() + ')', 'error');
-                document.getElementById('milesFill').value = '';
-                document.getElementById('gallons').value = '13.500';
-                document.getElementById('mpg').value = '';
-                return;
-            }
+            const existingUrl = localStorage.getItem('fuelTracker_webAppUrl');
+            const existingSheet = localStorage.getItem('fuelTracker_sheetName');
             
-            if (lastOdometer && odometer && odometer > lastOdometer) {
-                const milesFill = odometer - lastOdometer;
-                document.getElementById('milesFill').value = milesFill.toFixed(1);
-                
-                const expectedGallons = milesFill / 26.1;
-                document.getElementById('gallons').value = expectedGallons.toFixed(3);
-                
-                const mpg = milesFill / expectedGallons;
-                document.getElementById('mpg').value = mpg.toFixed(2);
-                
-                showStatus('Ready for next entry', 'info');
+            if (existingUrl) {
+                log('Found existing URL: ' + existingUrl);
+                document.getElementById('webAppUrl').value = existingUrl;
             }
-        }
-        
-        function calculateMPG() {
-            const milesFill = parseFloat(document.getElementById('milesFill').value);
-            const gallons = parseFloat(document.getElementById('gallons').value);
-            
-            if (milesFill > 0 && gallons > 0) {
-                const mpg = milesFill / gallons;
-                document.getElementById('mpg').value = mpg.toFixed(2);
+            if (existingSheet) {
+                log('Found existing sheet: ' + existingSheet);
+                document.getElementById('sheetName').value = existingSheet;
             }
-        }
+        });
     </script>
 </body>
-
+</html>
